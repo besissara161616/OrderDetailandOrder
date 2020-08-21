@@ -1,0 +1,39 @@
+﻿@model IEnumerable<OrderListNew.Models.SQLServer.OrderDetailPrint>
+
+@{
+    ViewData["Title"] = "TestOrder";
+}
+
+<h1>TestOrder</h1>
+<div id="PlaceHolderHere"></div>
+<div>
+    <button type="button" class="btn btn-outline-info badge-pill" data-toggle="ajax-modal"
+            data-target="#addOrd" data-url="@Url.Action("Create")">Create
+    </button>
+</div>
+
+<div>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>ลำดับ</th>
+                <th>รายการ</th>
+                <th>จำนวน</th>
+                <th>ราคา</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.OrdPrintName</td>
+                    <td>@item.OrdPrintNum</td>
+                    <td>@item.OrdPrintTotal</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

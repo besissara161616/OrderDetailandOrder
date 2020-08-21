@@ -1,0 +1,94 @@
+﻿@model IEnumerable<OrderListNew.Models.SQLServer.OrderPrint>
+@{
+    ViewData["Title"] = "ListOrder";
+}
+<div class="container">
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                <label>ชื่อ นายอิสระ </label> <label>นามสกุล ภพวิเศษ </label>
+                <label>ที่อยู่ 122/3 ม.10 ต.บ้านเป็ด อ.เมือง จ.หนองบัวลำภู 39000</label>
+                <table class="table" style="margin-top:2rem;">
+
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>รายการ</th>
+                            <th>จำนวน</th>
+                            <th>ราคา/หน่วย</th>
+                            <th>รวม</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>ป้ายไวนิล</td>
+                            <td>100</td>
+                            <td>300</td>
+                            <td>30000</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>ป้ายหาเสียง</td>
+                            <td>50</td>
+                            <td>100</td>
+                            <td>5000</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>สติ๊กเกอร์</td>
+                            <td>1000</td>
+                            <td>200</td>
+                            <td>200000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-group">
+                    <label id="OrdPrintPriceset" name="OrdPrintPriceset">ราคารวม :</label>
+                </div>
+                <div class="form-group">
+                    <label>ภาษี : </label>
+                </div>
+                <div class="form-group">
+                    <label id="OrdPrintTotal" name="OrdPrintTotal">ราคารวมทั้งหมด :</label>
+                </div>
+                <div class="form-group" align="center">
+                    <button type="submit" class="btn btn-success" onclick="OrderList()">สั่งทำ</button>
+                    <button type="submit" class="btn btn-danger">ปิดหน้าต่าง</button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div align="right">
+                    <label>วันที่ส่งทำ : 01/01/2020 18.04 น.</label>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+@*<script>
+        $(document).ready(function () {
+            var OrdTable = $('#Orderdetaillist').DataTab({
+                "ajax": {
+                    "url": '../OrderDetailPrint/ListOrder',
+                    "type": "get",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "WIdth", "autoWidth": true },
+                    { "data": "Height", "autoWidth": true },
+                    { "data": "Num", "autoWidth": true }
+                ]
+            })
+        })
+    </script>
+*@
+
+
+
+
+
+

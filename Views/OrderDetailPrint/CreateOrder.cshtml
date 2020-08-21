@@ -1,0 +1,302 @@
+﻿@model IEnumerable<OrderListNew.Models.SQLServer.OrderDetailPrint>
+
+@{
+    ViewData["Title"] = "CreateOrder";
+
+}
+<style>
+    .input-group {
+        margin-top: 1rem;
+    }
+
+    .container {
+        margin-top: 1rem;
+    }
+
+    .btn {
+        margin-left: 1rem;
+    }
+
+    .card {
+        border: #5543ca;
+        border-radius: 5px;
+        margin: 40px;
+        box-shadow: 3px 3px 10px #5543ca;
+    }
+
+    h1, h2 {
+        margin: 0%;
+        padding: 0%;
+        font-size: 40px;
+        font-family: sans-serif;
+        background: linear-gradient(to right,#f32170,#ffeb07,#2196f3,#ff00eb);
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        text-shadow: 0 0 10px rgba(0,0,0,.5);
+        text-align: center;
+    }
+    #addOrder {
+        background: #FF8C00;
+        color: white;
+    }#addOrder hove{
+         background:white;
+         color:black;
+     }
+</style>
+
+<div class="container">
+    <div class="text-center">
+        <img style="width:90px;height:80px;margin-top:2%" src="~/img/11069372_777523039022302_5732657500857041143_n.jpg" class="rounded">
+        <h1>Graphic Zone</h1>
+    </div>
+</div>
+<div class="container-fluid" style="margin-top:2rem;">
+    <form id="formSaveOrder" name="formSaveOrder" action="/OrderDetailPrint/upload" method="post" enctype="multipart/form-data" onsubmit="return updateData(this)">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h2>O R D E R</h2>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <h2>O R D E R L I S T</h2>
+                </div>
+                <div class="form-group">
+                    <p>ชื่อ  @ViewBag.CusFullname  เบอร์โทร</p>
+                    <p>ที่อยู่</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>ประเภทบริการ :</label>
+                    <select required class="custom-select" id="typeprintId" onchange="selectproducttype()" asp-items='@(new SelectList(ViewBag.TypePrint,"TypePrintId","TypePrintName"))'>
+                        <option>เลือกประเภทบริการ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ความยาว :</label>
+                    <div class="input-group-prepend">
+                        <input class="form-control" type="number" id="OrdPrintHeight" name="OrdPrintHeight" placeholder="กรอกความยาว" required="required" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">ซม.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>จำนวน :</label>
+                    <input class="form-control" type="number" id="OrdPrintNum" name="OrdPrintNum" placeholder="กรอกจำนวน" required="required" />
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">อัพโหลดไฟล์ตัวอย่างงาน :</label>
+                    <input type="file" class="form-control-file" id="Uploadfile" name="Uploadfile" required="required">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>ประเภทวัสดุ :</label>
+                    <select class="custom-select" id="printId" name="PrintId" @*asp-items='@(new SelectList(String.Empty,"PrintId","PrintName"))'*@>
+                        <option>เลือกประเภทวัสดุ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ความกว้าง :</label>
+                    <div class="input-group-prepend">
+                        <input class="form-control" type="number" id="OrdPrintWidth" name="OrdPrintWidth" placeholder="กรอกความกว้าง" required="required" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">ซม.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>รายละเอียดงาน : </label>
+                    <textarea class="form-control" id="OrdPrintDetail" name="OrdPrintDetail" rows="5" required="required"></textarea>
+                </div>
+                <div align="center">
+                    <button class="btn btn-" type="submit" id="addOrder">เพิ่มรายการ</button>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <table class="table table-sm">
+                    <thead>
+                        <tr align="center">
+                            <th>ลำดับ</th>
+                            <th>รหัสรายการ</th>
+                            <th>ชื่อรายการ</th>
+                            <th>พื้นที่รวม(ตรม.)</th>
+                            <th>ราคาต่อหน่วย</th>
+                            <th>จำนวน</th>
+                            <th>ราคา</th>
+                        </tr>
+                    </thead>
+                    @{
+                        var totalBill = 0;
+                    }
+                    @{
+                        var vax = 0.07;
+                    }
+                    @{
+                        var totalvax = 0;
+                    }
+                    @{
+                        var totalprice = 0;
+                    }
+
+                    @foreach (var x in Model)
+
+                    {
+                        <p>
+                            @{
+                                var sumarea = x.OrdPrintWidth * x.OrdPrintHeight;
+                            }
+                            @{
+                                x.OrdPrintTotal = sumarea * x.OrdPrintPriceset * x.OrdPrintNum;
+                            }
+                        </p>
+                        <tbody>
+                            <tr align="center">
+                                <td>@x.Id</td>
+                                <td>@x.OrdPrintId</td>
+                                <td>@x.OrdPrintName</td>
+                                <td> @sumarea</td>
+                                <td>@x.OrdPrintPriceset</td>
+                                <td>@x.OrdPrintNum</td>
+                                <td>@x.OrdPrintTotal</td>
+                                <td>
+                                    <button class="btn btn-dark" name="btnDelete" id="btnDelete" onclick="deleteOrder()">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        totalBill = totalBill + @Convert.ToInt32(x.OrdPrintTotal);
+                        totalvax = totalvax + @Convert.ToInt32(x.OrdPrintTotal * vax);
+                        totalprice = totalprice + @Convert.ToInt32(x.OrdPrintTotal + totalvax);
+                    }
+                </table>
+                <div align="right">
+                    <p>รวมราคา : <b>@totalBill.ToString("#,###.00")</b> บาท</p>
+                </div>
+                <div align="right">
+                    <p>ภาษี : <b>@totalvax.ToString("#,###.00")</b> บาท</p>
+                </div>
+                <div align="right">
+                    <p>รวมเป็นเงินทั้งสิ้น : <b>@totalprice.ToString("#,###.00")</b> บาท</p>
+                </div>
+
+            </div>
+        </div>
+    </form>
+    </div>
+    <div class="form-group" align="center">
+        <button id="saveOrder" name="saveOrder" class="btn btn-success" type="submit">สั่งทำ</button>
+        <button type="submit" class="btn btn-danger" onclick="ResetOder()">ยกเลิก</button>
+    </div>
+<script>
+    function ResetOder() {
+        $("#")
+    }
+      function deleteOrder() {
+          var OrdPrintId = document.getElementById("OrPrintId").value;
+            $.ajax({
+                type: "post",
+                data: { OrderDetailPrint },
+                url: "/OrderPrint/deleteOrder",
+                success: function (result) {
+                    if (result == 1) {
+                        toastr.success("ลบข้อมูลการส่งมอบ : @ViewBag.OrPrintId เรียบร้อยแล้ว", "สำเร็จ", { timeOut: 3000, "closeButton": true });
+                        setTimeout(function load() {
+                        location.reload();
+                        }, 1500);
+                        } else {
+                        toastr.error("รายการสั่งทำที่ : @ViewBag.OrPrintId ไม่ถูกเปลี่ยนแปลง", "ไม่สำเร็จ", { timeOut: 3000, "closeButton": true });
+                        }
+                        }
+                        })
+    }
+</script>
+                      @*<script>
+                                setInterval(function () {
+                                    getlist()
+                                }, 1000);
+
+                                function getlist() {
+                                    $.ajax({
+                                        type: "post",
+                                        url: "../OrderDetailPrint/CreateOrderType",
+                                        success: function (result) {
+                                            var item = '';
+                                            $.each(result, function (i, row) {
+                                                item += "<tr>" + " <td>" + result[i].ordPrintId + "</td>" +
+                                                    " <td>" + result[i].ordPrintName + "</td>" +
+                                                    " <td>" + result[i].ordPrintWidth * result[i].ordPrintHeight + "</td>" +
+                                                    " <td>" + result[i].printId + "</td>" +
+                                                    " <td>" + result[i].ordPrintNum + "</td>" + "</tr>";
+                                                      " <td>"  + "</td>" +
+                                                "</tr>";
+
+
+
+                                            });
+                                            $("#getlist").html(item);
+                                        }
+                                    });
+                                }
+                            </script>*@
+                        <script>
+        function selectproducttype() {
+            console.log(document.getElementById("typeprintId").value);
+            var ti = document.getElementById("typeprintId").value;
+            var url = '@Url.Content("~/")' + "OrderDetailPrint/getselectbyid";
+            //console.log(url);
+            $.getJSON(url, { id:ti }, function (data) {
+                console.log(data);
+                var item = '';
+                $("#printId").empty();
+                $.each(data, function (i, row) {
+                    item += "<option value=' " + data[i].value + "'>" + data[i].text + "</option>";
+                     });
+                $("#printId").html(item);
+            });
+        }
+                        </script>
+                        <script>
+                            $(document).ready(function getProgress() {
+                                var width = 0;
+                                var move = setInterval(x, 0);
+                                function x() {
+                                    if (width == 70) {
+                                        $('.progress-bar').css('background-color', "green");
+                                        clearInterval(move);
+                                    } else {
+                                        width++;
+                                        $('.progress-bar').css('width', width + '%');
+                                    }
+                                }
+                            });
+                            function updateData(formData) {
+                                var ajaxConfig = {
+                                    type: "post",
+                                    url: "/OrderDetailPrint/upload",
+                                    data: new FormData(formData),
+                                    susccess: function (result) {
+                                        toastr.success("xxx", { timeOut: 3000, "closeButton": true });
+                                        setTimeout(function fetch() {
+                                            window.location.href = ("/OrderDetailPrint/CreateOrder");
+                                        }, 1000);
+                                    }
+                                }
+                                if ($(formDate).attr('enctype') == "multipart/form-data") {
+                                    ajaxConfig["contentType"] = false;
+                                    ajaxConfig["processData"] = false;
+                                }
+                                $.ajax(ajaxConfig);
+                                return false;
+                            }
+
+                        </script>
+
+
+
